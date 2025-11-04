@@ -1,0 +1,22 @@
+# Zola 构建输出
+public/
+
+# IDE 配置
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 操作系统
+.DS_Store
+Thumbs.db
+
+# 临时文件
+*.tmp
+*.bak
+*.log
+
+# Node.js (如果使用)
+node_modules/
+package-lock.json

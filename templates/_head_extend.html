@@ -1,0 +1,29 @@
+<!-- 随机背景动画加载器 -->
+<script>
+(function() {
+    // 'plum',
+  var backgrounds = ['star'];
+  var bgType = backgrounds[Math.floor(Math.random() * backgrounds.length)];
+
+  // 动态加载对应的 JS 文件
+  var script = document.createElement('script');
+  script.src = '/js/' + bgType + '.js';
+  script.defer = true;
+
+  // 调试信息：显示加载的路径
+  console.log('Loading background animation:', bgType, 'from:', script.src);
+
+  script.onerror = function() {
+    console.error('❌ Failed to load background animation:', script.src);
+  };
+
+  script.onload = function() {
+    console.log('✅ Background animation loaded successfully:', bgType);
+  };
+
+  document.head.appendChild(script);
+})();
+</script>
+
+<!-- 主题切换动画 -->
+<script src="/js/theme-transition.js" defer></script>

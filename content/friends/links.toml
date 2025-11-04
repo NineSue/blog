@@ -1,0 +1,38 @@
+# 友链数据文件
+# 使用 box 类型展示友链卡片
+
+[[collection]]
+type = "box"
+title = "安"
+subtitle = "自己是自己的第三个朋友"
+link = "https://ninesue.online"
+img = "img/an.png"
+
+[[collection]]
+type = "box"
+title = "TC"
+subtitle = "在征服生物医学的路上"
+link = "https://wplog.qiutianci.top"
+img = "img/qiu.png"
+
+[[collection]]
+type = "box"
+title = "圆果"
+subtitle = "感动于努力的每一天的果子"
+link = "https://blog.yuanguo.online"
+img = "img/jun.png"
+
+[[collection]]
+type = "box"
+title = "Luxynth"
+subtitle = "“我心匪石不可转，我心匪席不可卷。”"
+link = "https://www.luxynth.cn"
+img = "img/luxynth.jpg"
+
+# 添加更多友链，复制上面的格式即可
+# [[collection]]
+# type = "box"
+# title = "朋友名字"
+# subtitle = "个人简介或网站描述"
+# link = "https://friend-blog.com"
+# img = "https://friend-blog.com/avatar.jpg"
