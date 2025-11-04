@@ -1,0 +1,7 @@
+{
+  "buildCommand": "bash fix_serene_scss.sh && git submodule update --init --recursive && zola build",
+  "outputDirectory": "public",
+  "env": {
+    "ZOLA_VERSION": "0.20.0"
+  }
+}
