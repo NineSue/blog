@@ -1,0 +1,7 @@
+{
+  "buildCommand": "git submodule update --init --recursive && zola build",
+  "outputDirectory": "public",
+  "env": {
+    "ZOLA_VERSION": "0.21.0"
+  }
+}
