@@ -3,13 +3,6 @@
 (function() {
   'use strict';
 
-  // 等待所有脚本加载完成后再覆盖
-  // 使用 setTimeout 确保在 main.js 执行完成后再执行
-  window.addEventListener('load', function() {
-    // 额外延迟确保 main.js 的事件监听器已经绑定
-    setTimeout(init, 100);
-  });
-
   function init() {
     const themeToggle = document.getElementById('theme-toggle');
     if (!themeToggle) return;
@@ -103,4 +96,15 @@
 
     console.log('✅ 主题切换动画已加载');
   }
+
+  // 导出到全局，供 page-transition.js 调用
+  window.initThemeTransition = init;
+
+  // 等待所有脚本加载完成后再覆盖
+  // 使用 setTimeout 确保在 main.js 执行完成后再执行
+  window.addEventListener('load', function() {
+    // 额外延迟确保 main.js 的事件监听器已经绑定
+    setTimeout(init, 100);
+  });
+
 })();
