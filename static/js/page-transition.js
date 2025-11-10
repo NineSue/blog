@@ -110,13 +110,23 @@
     // 1. 更新标题
     document.title = newDoc.title;
 
-    // 2. 替换 body 内容
+    // 2. 先保存当前主题状态（防止闪烁）
+    const currentTheme = sessionStorage.getItem("theme");
+    const isDark = currentTheme === "dark";
+
+    // 3. 先更新 body class（在替换内容之前，确保主题状态正确）
+    const newBodyClasses = newDoc.body.className.split(' ');
+
+    // 保留当前的主题状态，使用新页面的其他 class
+    document.body.className = newBodyClasses
+      .filter(cls => cls !== 'dark')  // 移除新页面的 dark class
+      .concat(isDark ? ['dark'] : [])  // 添加当前的主题状态
+      .join(' ');
+
+    // 4. 替换 body 内容
     document.body.innerHTML = newDoc.body.innerHTML;
 
-    // 3. 复制 body 的 class（用于主题等状态）
-    document.body.className = newDoc.body.className;
-
-    // 4. 可选：同步 meta 标签（description、keywords 等）
+    // 5. 可选：同步 meta 标签（description、keywords 等）
     const newMeta = newDoc.head.querySelectorAll('meta[name], meta[property]');
     newMeta.forEach(meta => {
       const name = meta.getAttribute('name') || meta.getAttribute('property');
