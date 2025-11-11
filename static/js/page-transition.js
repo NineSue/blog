@@ -159,13 +159,26 @@
       window.initFriends();
     }
 
-    // 5. 重新初始化其他交互功能
+    // 5. 重新初始化目录功能（toc-enhance.js）
+    if (window.tocEnhanceInit) {
+      window.tocEnhanceInit();
+    }
+
+    // 6. 重新初始化星星背景效果（star.js）
+    if (window.cleanupStars) {
+      window.cleanupStars();
+    }
+    if (window.initStars) {
+      window.initStars();
+    }
+
+    // 7. 重新初始化其他交互功能
     // 可以在这里添加其他需要重新初始化的脚本
 
-    // 6. 滚动到页面顶部
+    // 8. 滚动到页面顶部
     window.scrollTo(0, 0);
 
-    // 7. 触发自定义事件，让其他脚本知道页面已更新
+    // 9. 触发自定义事件，让其他脚本知道页面已更新
     window.dispatchEvent(new Event('page-loaded'));
 
     console.log('✅ 页面已重新初始化');

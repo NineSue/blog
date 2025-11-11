@@ -36,6 +36,22 @@
     --callout-caution-color: #d06161;
   }
 
+  /* ========== 亮色模式背景覆盖（纯白，无装饰） ========== */
+  /* 隐藏亮色模式的网格背景 */
+  body:not(.dark)::before {
+    display: none !important;
+  }
+
+  /* 隐藏亮色模式的 SVG 光照图 */
+  body:not(.dark)::after {
+    display: none !important;
+  }
+
+  /* 确保亮色模式背景为纯白 */
+  body:not(.dark) {
+    background-color: #ffffff !important;
+  }
+
   /* typography */
   body {
     --main-font: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -302,5 +318,410 @@
       transform: translateY(0);
     }
   }
+
+  /* ========== 纸质效果 ========== */
+  /* 为文章页 main 容器添加纸质效果 + 上下留白 + 阴影 */
+  body.post #wrapper > main {
+    position: relative;
+    max-width: 900px;  /* 从 760px 增加到 900px，提升阅读体验 */
+    margin: 3rem auto;  /* 上下留白 3rem */
+    background-color: transparent;
+    border: none;
+    padding: 10px 8px 4em;
+  }
+
+  @media (min-width: 768px) {
+    body.post #wrapper > main {
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      background-color: #ffffff !important;  /* 统一白色纸张，不论暗色亮色 */
+      border-radius: 10px;
+      padding: 2.5rem 2.25rem;
+
+      /* 柔和阴影 */
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08),
+                  0 4px 16px rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  /* 暗色模式增强阴影（让白纸更突出） */
+  body.dark.post #wrapper > main {
+    background-color: #ffffff !important;  /* 强制白色纸张 */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5),
+                0 8px 32px rgba(0, 0, 0, 0.4) !important;
+    border-color: rgba(0, 0, 0, 0.3) !important;
+  }
+
+  /* 纸质纹理叠加层 */
+  body.post #wrapper > main::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(/noise.png);
+    background-repeat: repeat;
+    opacity: 0.04;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    border-radius: 10px;
+  }
+
+  @media (max-width: 767px) {
+    body.post #wrapper > main::before {
+      display: none;
+    }
+  }
+
+  /* 确保内容在纸质纹理之上 */
+  body.post #wrapper > main > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 确保文字在白色纸张上清晰可读 */
+  body.post #wrapper > main,
+  body.dark.post #wrapper > main {
+    color: #2f3030 !important;  /* 深色文字 */
+  }
+
+  /* 标题文字颜色 */
+  body.post #wrapper > main h1,
+  body.post #wrapper > main h2,
+  body.post #wrapper > main h3,
+  body.post #wrapper > main h4,
+  body.post #wrapper > main h5,
+  body.post #wrapper > main h6,
+  body.dark.post #wrapper > main h1,
+  body.dark.post #wrapper > main h2,
+  body.dark.post #wrapper > main h3,
+  body.dark.post #wrapper > main h4,
+  body.dark.post #wrapper > main h5,
+  body.dark.post #wrapper > main h6 {
+    color: #1a1a1a !important;  /* 标题更深 */
+  }
+
+  /* 链接颜色保持主题色 */
+  body.post #wrapper > main a,
+  body.dark.post #wrapper > main a {
+    color: #5871a2 !important;
+  }
+
+  body.post #wrapper > main a:hover,
+  body.dark.post #wrapper > main a:hover {
+    color: #6f8fd1 !important;
+  }
+
+  /* 行内代码在白纸上的样式 */
+  body.post #wrapper > main code,
+  body.dark.post #wrapper > main code {
+    background-color: rgba(88, 113, 162, 0.1) !important;
+    color: #2f3030 !important;
+  }
+
+  /* 代码块在白纸上的样式 */
+  body.post #wrapper > main pre,
+  body.dark.post #wrapper > main pre {
+    background-color: #f5f5f5 !important;
+    border: 1px solid #e0e0e0 !important;
+  }
+
+  body.post #wrapper > main pre code,
+  body.dark.post #wrapper > main pre code {
+    background-color: transparent !important;
+  }
+
+  /* 引用块在白纸上的样式 */
+  body.post #wrapper > main blockquote,
+  body.dark.post #wrapper > main blockquote {
+    border-left-color: #5871a2 !important;
+    color: #4a4a4a !important;
+  }
+
+  /* 表格在白纸上的样式 */
+  body.post #wrapper > main table,
+  body.dark.post #wrapper > main table {
+    color: #2f3030 !important;
+  }
+
+  body.post #wrapper > main th,
+  body.dark.post #wrapper > main th {
+    background-color: #f5f5f5 !important;
+    color: #1a1a1a !important;
+  }
+
+  /* ========== 智能折叠目录样式（毛玻璃效果 + 自动展开） ========== */
+
+  /* 默认：目录在文章上方（静态布局） */
+  body.post aside nav {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-bottom: 2rem;
+    font-size: 14px;
+    padding: 16px !important;
+    border-radius: 8px;
+
+    /* 毛玻璃背景 */
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(88, 113, 162, 0.15);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  /* 暗色模式毛玻璃 */
+  body.dark.post aside nav {
+    background: rgba(0, 0, 0, 0.85);
+    border-color: rgba(111, 143, 209, 0.2);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  /* 大屏幕：固定在右侧 */
+  @media (min-width: 1600px) {
+    body.post aside nav {
+      position: fixed !important;
+      top: 90px;
+      right: 20px;
+      width: 220px !important;
+      max-width: 220px !important;
+      min-width: 220px !important;
+      box-sizing: border-box !important;
+      max-height: calc(100vh - 120px);
+      margin-bottom: 0;
+      z-index: 300;
+      overflow-y: auto;
+    }
+
+  /* 目录列表基础样式 */
+  body.post aside nav ul {
+    list-style: none;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin: 0;
+  }
+
+  /* H2 分组容器 */
+  .toc-h2-group {
+    margin: 4px 0;
+  }
+
+  /* H2 项容器 */
+  .toc-h2-item {
+    position: relative;
+  }
+
+  /* H2 链接样式 */
+  .toc-h2-item > a {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: all 200ms ease;
+    cursor: pointer;
+  }
+
+  /* 折叠图标 */
+  .toc-collapse-icon {
+    margin-right: 6px;
+    font-size: 10px;
+    color: var(--text-pale-color);
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-block;
+  }
+
+  /* 展开时旋转图标 */
+  .toc-h2-item.expanded .toc-collapse-icon {
+    transform: rotate(90deg);
+  }
+
+  /* 层级指示器（圆点） */
+  .toc-level-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    flex-shrink: 0;
+    background: var(--primary-color);
+  }
+
+  /* H2 悬停效果 */
+  .toc-h2-item > a:hover {
+    background: var(--primary-pale-color);
+  }
+
+  /* H2 激活状态（波动动画） */
+  .toc-h2-item.active > a {
+    background: var(--primary-pale-color);
+    color: var(--primary-color);
+    font-weight: 600;
+    border-left: 3px solid var(--primary-color);
+    padding-left: 9px;
+    animation: tocPulse 1.5s ease-in-out infinite;
+  }
+
+  /* 波动动画关键帧 */
+  @keyframes tocPulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+  }
+
+  /* H3 容器（折叠/展开） */
+  .toc-h3-container {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 300ms ease;
+    margin-left: 20px;
+  }
+
+  /* 展开状态 */
+  .toc-h2-item.expanded .toc-h3-container {
+    max-height: 500px;
+    opacity: 1;
+  }
+
+  /* H3 项 */
+  .toc-h3-item {
+    margin: 2px 0;
+  }
+
+  .toc-h3-item > a {
+    display: flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--text-pale-color);
+    text-decoration: none;
+    transition: all 200ms ease;
+  }
+
+  /* H3 的空心圆点 */
+  .toc-h3-item .toc-level-dot {
+    width: 6px;
+    height: 6px;
+    border: 1.5px solid var(--primary-color);
+    background: transparent;
+  }
+
+  /* H3 悬停效果 */
+  .toc-h3-item > a:hover {
+    background: var(--primary-decoration-color);
+    color: var(--text-color);
+  }
+
+  /* H3 激活状态 */
+  .toc-h3-item.active > a {
+    background: var(--primary-decoration-color);
+    color: var(--primary-color);
+    font-weight: 500;
+  }
+
+  /* 滚动条美化 */
+  body.post aside nav::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  body.post aside nav::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  body.post aside nav::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 3px;
+    opacity: 0.5;
+  }
+
+  body.post aside nav::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+    opacity: 1;
+  }
+
+  /* ========== 布局修正 ========== */
+  /* 大屏幕下：确保 aside 和 blank 不占用布局空间（因为目录使用 fixed 定位） */
+  @media (min-width: 1600px) {
+    body.post aside {
+      width: 0;
+      position: static;
+      margin-top: 0;
+    }
+
+    body.post #blank {
+      width: 0;
+    }
+  }
+
+  /* ========== 导航链接优化 ========== */
+
+  /* 优化 header 导航链接字体 */
+  header nav a,
+  header nav a#back-link {
+    font-size: 1rem !important;      /* 16px，比原来的 14.4px 更大 */
+    font-weight: 500 !important;     /* 中等粗细，更清晰 */
+    letter-spacing: 0.5px;           /* 增加字间距 */
+    line-height: 1.6;                /* 增加行高 */
+    transition: color 0.2s ease;     /* 平滑过渡 */
+  }
+
+  /* 保持悬停效果 */
+  header nav a:hover,
+  header nav a#back-link:hover {
+    color: var(--primary-color) !important;
+  }
+
+  /* 确保在不同模式下导航可见 */
+  body header nav a,
+  body.dark header nav a {
+    color: var(--text-pale-color);
+  }
+
+  /* ========== Header 对齐优化 ========== */
+
+  /* 统一所有页面的 header：占满宽度，BACK按钮左对齐 */
+  header {
+    max-width: none !important;      /* 移除宽度限制，占满整个宽度 */
+    margin: 0 !important;             /* 移除auto居中 */
+    padding: 0 15px;                  /* 保留两侧15px内边距 */
+  }
+
+  /* 统一所有页面的内容宽度为 900px（最佳视觉一致性） */
+  body {
+    --main-max-width: 900px;
+  }
+
+  /* ========== Header 垂直位置统一 ========== */
+
+  /* Blog页面header添加上边距，与post页面main的3rem对齐 */
+  body.blog header {
+    margin-top: 3rem !important;
+  }
+
+  /* Tag-single页面header */
+  body.tag-single header {
+    margin-top: 3rem !important;
+  }
+
+  /* Tag-list页面header */
+  body.tag-list header {
+    margin-top: 3rem !important;
+  }
+
+  /* Prose页面header */
+  body.prose-page header {
+    margin-top: 3rem !important;
+  }
+
 
 </style>
