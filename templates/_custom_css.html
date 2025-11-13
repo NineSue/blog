@@ -100,40 +100,53 @@
   /* ========== 友链页面自定义样式 ========== */
   /* 完全按照 myBlog 项目的样式实现 */
 
-  /* 友链容器 - 响应式网格布局 */
+  /* 友链容器 - 简单块级容器 */
   #friends-container {
-    display: grid !important;
-    gap: 0.875rem;
-    grid-template-columns: 1fr;
+    display: block !important;
     margin: 2rem 0;
   }
 
+  /* 修复 Collection wrapper - flex 布局以支持 order 属性 */
+  #friends-container .collection-wrapper {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    width: 100%;
+  }
+
+  /* 响应式调整 gap */
   @media (min-width: 640px) {
-    #friends-container {
-      grid-template-columns: repeat(2, 1fr);
+    #friends-container .collection-wrapper {
       gap: 1rem;
     }
   }
 
-  @media (min-width: 1024px) {
-    #friends-container {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  /* 修复 Collection wrapper 破坏网格布局 */
-  #friends-container .collection-wrapper {
-    display: contents !important;
-  }
-
-  /* 强制覆盖 Collection box 默认样式 */
+  /* 友链卡片响应式宽度 - 强制覆盖主题样式 */
   #friends-container .collection-box-wrapper {
+    /* 强制覆盖所有主题默认样式 */
     width: 100% !important;
     max-width: 100% !important;
+    min-width: 0 !important;
     margin: 0 !important;
     border: none !important;
     display: block !important;
-    overflow: hidden;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+
+    /* Flex 布局 - 移动端占满 */
+    flex: 0 0 100% !important;
+  }
+
+  @media (min-width: 640px) {
+    #friends-container .collection-box-wrapper {
+      flex: 0 0 calc(50% - 0.5rem) !important;  /* 2列 */
+    }
+  }
+
+  @media (min-width: 1024px) {
+    #friends-container .collection-box-wrapper {
+      flex: 0 0 calc(33.333% - 0.667rem) !important;  /* 3列 */
+    }
   }
 
   /* 友链卡片 - 完全模仿 myBlog 样式 */

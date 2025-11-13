@@ -158,6 +158,11 @@
     }
 
     // 4. 重新初始化友人列表（friends.js）
+    // 先确保友人帐排序已预生成
+    if (window.preGenerateFriendsOrder) {
+      window.preGenerateFriendsOrder();
+    }
+    // 然后应用排序
     if (window.initFriends) {
       window.initFriends();
     }
