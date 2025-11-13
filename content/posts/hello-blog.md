@@ -5,7 +5,7 @@ date = 2025-11-03
 
 [taxonomies]
 categories = ["随笔"]
-tags = ["开始", "博客"]
+tags = ["hello-blog"]
 
 [extra]
 toc = true

@@ -10,7 +10,7 @@ generate_feeds = false
 [extra]
 lang = "zh"
 
-title = "文章列表"
+title = "文"
 subtitle = "记录学习与思考"
 
 date_format = "%Y年%-m月%-d日"

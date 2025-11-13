@@ -54,8 +54,8 @@
 
   /* typography */
   body {
-    --main-font: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-    --code-font: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    --main-font: "Noto Serif CJK", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --code-font: "Noto Serif CJK", "Input Mono", "Fira Code", "Consolas", "Monaco", monospace;
     --homepage-max-width: 768px;
     --main-max-width: 768px;
     --avatar-size: 70px;
@@ -458,9 +458,11 @@
     color: #2f3030 !important;
   }
 
-  /* 行内代码行高优化 */
+  /* 行内代码行高和字体优化 */
   body.post #wrapper > main :not(pre) > code,
   body.dark.post #wrapper > main :not(pre) > code {
+    font-size: 0.9em !important;  /* catcodeme 风格：更小的行内代码 */
+    font-weight: 500 !important;  /* Medium 权重 */
     line-height: 1.6 !important;  /* 行内代码更紧凑，视觉一致 */
   }
 
@@ -474,6 +476,8 @@
   body.post #wrapper > main pre code,
   body.dark.post #wrapper > main pre code {
     background-color: transparent !important;
+    font-size: 1.015em !important;  /* catcodeme 风格：略大的代码块字体 */
+    font-weight: 600 !important;  /* SemiBold 权重 */
   }
 
   /* 引用块在白纸上的样式 */
@@ -748,6 +752,73 @@
           padding: 0 15px; /* 保留两侧15px内边距 */
       }
 
+      /* header nav 布局：BACK在左，主题切换在右 */
+      header nav {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          position: relative; /* 为居中的 HOME 按钮提供定位上下文 */
+      }
+
+      /* HOME 按钮样式 - 居中显示 */
+      header nav a#home-link {
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: 0.9rem !important;
+          font-weight: 500 !important;
+          color: var(--text-pale-color);
+          text-decoration: none;
+          padding: 1em 0;
+          margin-top: 1em;
+      }
+
+      header nav a#home-link:hover {
+          color: var(--primary-color) !important;
+      }
+
+      /* 响应式：移动端缩小字体 */
+      @media (max-width: 768px) {
+          header nav a#home-link {
+              font-size: 0.8rem !important;
+          }
+      }
+
+      /* 页面header中的主题切换按钮（与BACK对称） */
+      header nav #theme-toggle {
+          padding: 1em 0 1em 1em;
+          margin-top: 1em;
+          background: none;
+          border: none;
+          cursor: pointer;
+          color: var(--text-pale-color);
+          transition: color 0.2s ease;
+          line-height: 0;
+      }
+
+      header nav #theme-toggle:hover {
+          color: var(--primary-color);
+      }
+
+      header nav #theme-toggle svg {
+          width: 20px;
+          height: 20px;
+          vertical-align: middle;
+      }
+
+      /* 图标切换逻辑 */
+      header nav #theme-toggle .sun-icon {
+          display: none;
+      }
+
+      body.dark header nav #theme-toggle .sun-icon {
+          display: initial;
+      }
+
+      body.dark header nav #theme-toggle .moon-icon {
+          display: none;
+      }
+
       /* 统一所有页面的内容宽度为 900px（最佳视觉一致性） */
       body {
           --main-max-width: 900px;
@@ -775,5 +846,144 @@
       }
   }
 
+  /* ========== 博客列表页两栏布局 ========== */
+  /* 两栏容器 - 默认移动端单列 */
+  .two-column-layout.blog-page {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-top: 0;  /* 移除顶部边距，让布局更靠上 */
+  }
+
+  /* 桌面端两栏布局 */
+  @media (min-width: 769px) {
+    .two-column-layout.blog-page {
+      grid-template-columns: 1fr 280px;
+      gap: 3rem;
+    }
+  }
+
+  /* 左栏文章列表 */
+  .two-column-layout.blog-page .left-column {
+    min-width: 0;
+  }
+
+  /* 右栏标签侧边栏 */
+  .two-column-layout.blog-page .right-column.tags-sidebar {
+    position: relative;
+  }
+
+  /* 标签侧边栏标题 */
+  .tags-sidebar h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-top: -0.5rem;       /* 从 -0.25rem 改为 -0.5rem，再上升 4px */
+    margin-bottom: 0.75rem;    /* 减小下边距，让标签更靠近线条 */
+    padding-bottom: 0.375rem;  /* 减小内边距，让线条更靠近标题 */
+    border-bottom: 2px solid var(--primary-color);
+  }
+
+  /* 标签云容器 */
+  .tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: flex-start;
+    margin-top: 0;  /* 确保没有额外的顶部边距 */
+  }
+
+  /* 标签链接样式 */
+  .tags-cloud .tag-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.4rem 0.75rem;
+    background-color: var(--primary-decoration-color);
+    border: 1px solid var(--primary-pale-color);
+    border-radius: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    line-height: 1.4;
+  }
+
+  .tags-cloud .tag-link:hover {
+    background-color: var(--primary-pale-color);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(88, 113, 162, 0.2);
+  }
+
+  /* 暗色模式悬停效果 */
+  body.dark .tags-cloud .tag-link:hover {
+    box-shadow: 0 2px 8px rgba(111, 143, 209, 0.3);
+  }
+
+  /* 标签 hash 符号 */
+  .tag-link .tag-hash {
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+
+  /* 标签文章数量 */
+  .tag-link .tag-count {
+    margin-left: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--text-pale-color);
+    background-color: var(--bg-color);
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+  }
+
+  /* 移动端标签云调整 */
+  @media (max-width: 768px) {
+    .tags-sidebar {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--primary-decoration-color);
+    }
+
+    .tags-cloud {
+      gap: 0.6rem;
+    }
+
+    .tags-cloud .tag-link {
+      font-size: 0.85rem;
+      padding: 0.35rem 0.65rem;
+    }
+  }
+
+  /* ========== 头像切换动画 ========== */
+  /* "微微一颤"动画效果 */
+  @keyframes avatarShake {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    15% {
+      transform: translateX(-3px);
+      opacity: 0.7;
+    }
+    35% {
+      transform: translateX(3px);
+      opacity: 0.5;
+    }
+    50% {
+      transform: translateX(0);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 0;
+    }
+  }
+
+  #info img.avatar-shake {
+    animation: avatarShake 0.4s ease-out forwards;
+  }
 
 </style>

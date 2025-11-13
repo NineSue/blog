@@ -112,7 +112,7 @@
 
     // 2. 先保存当前主题状态（防止闪烁）
     const currentTheme = sessionStorage.getItem("theme");
-    const isDark = currentTheme === "dark";
+    const isDark = currentTheme === "dark" || currentTheme === null;  // null视为暗色
 
     // 3. 先更新 body class（在替换内容之前，确保主题状态正确）
     const newBodyClasses = newDoc.body.className.split(' ');
@@ -141,8 +141,11 @@
    * 重新初始化页面脚本和事件
    */
   function reinitialize() {
-    // 1. 重新绑定链接点击事件
-    setupLinkInterception();
+    // 1. 移除主题切换按钮的初始化标记
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+      themeToggle.removeAttribute('data-theme-toggle-initialized');
+    }
 
     // 2. 重新初始化主题切换功能（main.js）
     if (window.enableThemeToggle) {
@@ -172,48 +175,95 @@
       window.initStars();
     }
 
-    // 7. 重新初始化其他交互功能
+    // 7. 重新初始化头像切换功能（avatar-switcher.js）
+    if (window.cleanupAvatarSwitcher) {
+      window.cleanupAvatarSwitcher();
+    }
+    if (window.initAvatarSwitcher) {
+      window.initAvatarSwitcher();
+    }
+
+    // 8. 重新初始化其他交互功能
     // 可以在这里添加其他需要重新初始化的脚本
 
-    // 8. 滚动到页面顶部
+    // 9. 滚动到页面顶部
     window.scrollTo(0, 0);
 
-    // 9. 触发自定义事件，让其他脚本知道页面已更新
+    // 10. 触发自定义事件，让其他脚本知道页面已更新
     window.dispatchEvent(new Event('page-loaded'));
 
     console.log('✅ 页面已重新初始化');
   }
 
   /**
+   * 规范化URL用于比较
+   */
+  function normalizeUrl(url) {
+    try {
+      const parsed = new URL(url);
+      // 移除尾部斜杠进行统一比较（但保留根路径的斜杠）
+      let pathname = parsed.pathname;
+      if (pathname.endsWith('/') && pathname.length > 1) {
+        pathname = pathname.slice(0, -1);
+      }
+      return parsed.origin + pathname + parsed.search + parsed.hash;
+    } catch (e) {
+      return url;
+    }
+  }
+
+  /**
    * 使用 View Transition 进行导航
    */
   async function navigateWithTransition(url) {
-    // 如果是当前页面，不做处理
-    if (url === window.location.href) {
+    // 规范化URL比较
+    const normalizedUrl = normalizeUrl(url);
+    const normalizedHref = normalizeUrl(window.location.href);
+
+    if (normalizedUrl === normalizedHref) {
+      console.log('⏭️ 跳过导航：已在目标页面');
+      return;
+    }
+
+    // 防止循环：检查是否正在导航中
+    if (window.isNavigating) {
+      console.log('⏭️ 跳过导航：正在导航中');
       return;
     }
 
     try {
+      window.isNavigating = true;
+
       // 1. 加载新页面
       const newDoc = await fetchPage(url);
 
-      // 2. 使用 View Transition 包装 DOM 替换
+      // 2. 使用 View Transition API
+      if (!document.startViewTransition) {
+        replacePage(newDoc);
+        history.pushState(null, '', url);
+        reinitialize();
+        window.isNavigating = false;
+        return;
+      }
+
       const transition = document.startViewTransition(() => {
         replacePage(newDoc);
       });
 
-      // 3. 等待过渡完成
       await transition.finished;
 
-      // 4. 更新浏览器历史记录
-      window.history.pushState({ url }, '', url);
+      // 3. 更新浏览器历史
+      history.pushState(null, '', url);
 
-      // 5. 重新初始化页面
+      // 4. 重新初始化页面脚本
       reinitialize();
 
+      window.isNavigating = false;
+
     } catch (error) {
-      console.error('❌ 页面切换失败，使用普通导航:', error);
-      // 降级：使用普通导航
+      window.isNavigating = false;
+      console.error('❌ 页面切换失败:', error);
+      // 降级方案：使用传统方式跳转
       window.location.href = url;
     }
   }
@@ -221,12 +271,18 @@
   /**
    * 设置链接点击拦截
    */
-  function setupLinkInterception() {
-    // 移除旧的事件监听器（如果存在）
-    document.removeEventListener('click', handleLinkClick);
+  let isLinkInterceptionSetup = false;
 
-    // 添加新的事件监听器
+  function setupLinkInterception() {
+    // 防止重复绑定
+    if (isLinkInterceptionSetup) {
+      console.log('⏭️ 链接拦截已设置');
+      return;
+    }
+
     document.addEventListener('click', handleLinkClick, false);
+    isLinkInterceptionSetup = true;
+    console.log('✅ 链接拦截已设置');
   }
 
   /**
@@ -254,9 +310,14 @@
   function handlePopState(event) {
     const url = window.location.href;
 
+    // 防止循环
+    if (window.isNavigating) {
+      return;
+    }
+
     // 使用 View Transition 加载历史页面
-    navigateWithTransition(url).catch(() => {
-      // 如果失败，刷新页面
+    navigateWithTransition(url).catch((error) => {
+      console.error('后退/前进失败，刷新页面:', error);
       window.location.reload();
     });
   }

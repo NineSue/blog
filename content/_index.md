@@ -24,4 +24,3 @@ recent_max = 15
 recent_more_text = "更多 »"
 date_format = "%Y年%-m月%-d日"
 +++
-欢迎来到我的博客！
