@@ -1,0 +1,13 @@
+<section class="collection-wrapper">
+  {{ range site.Data.links.collection }}
+  <div class="collection-box-wrapper">
+    <a class="collection box" href="{{ .link }}" target="_blank" rel="noreferrer noopener">
+      <img class="no-lightense" src="{{ .img }}" alt="{{ .title }}" width="48" height="48">
+      <div class="text">
+        <div class="title">{{ .title }}</div>
+        <div class="subtitle">{{ .subtitle }}</div>
+      </div>
+    </a>
+  </div>
+  {{ end }}
+</section>

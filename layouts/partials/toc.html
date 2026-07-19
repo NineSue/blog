@@ -1,0 +1,12 @@
+{{- /* 递归渲染目录;class hN 表示嵌套深度而非真实标题级,toc-enhance.js 依赖此约定 */ -}}
+<ul>
+  {{- $level := .level -}}
+  {{- range .headings }}
+  <li>
+    <a class="h{{ $level }}" href="#{{ .ID }}">{{ .Title }}</a>
+    {{- with .Headings }}
+    {{ partial "toc.html" (dict "headings" . "level" (add $level 1)) }}
+    {{- end }}
+  </li>
+  {{- end }}
+</ul>

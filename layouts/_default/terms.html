@@ -1,0 +1,16 @@
+{{ define "bodyclass" }}tag-list{{ end }}
+
+{{ define "main" }}
+<div id="wrapper">
+  {{ partial "header.html" "/" }}
+  <main>
+    <h1 class="title">Tags</h1>
+    <div class="tags">
+      {{ range .Pages }}
+      <a class="instant" href="{{ .RelPermalink }}"># {{ .LinkTitle }}</a>
+      {{ end }}
+    </div>
+  </main>
+  {{ partial "footer.html" . }}
+</div>
+{{ end }}

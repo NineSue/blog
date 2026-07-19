@@ -1,0 +1,10 @@
+<header>
+  <nav>
+    <a id="back-link" href="{{ . }}">← {{ site.Params.backLinkText }}</a>
+    <a id="home-link" href="/">Home</a>
+    <button id="theme-toggle" aria-label="theme switch">
+      <span class="moon-icon">{{ partial "icon.html" "moon" }}</span>
+      <span class="sun-icon">{{ partial "icon.html" "sun" }}</span>
+    </button>
+  </nav>
+</header>

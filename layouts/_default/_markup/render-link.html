@@ -1,0 +1,2 @@
+{{- $external := strings.HasPrefix .Destination "http" -}}
+<a href="{{ .Destination | safeURL }}"{{ if $external }} rel="nofollow noreferrer"{{ end }}>{{ .Text }}</a>

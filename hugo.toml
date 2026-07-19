@@ -1,0 +1,39 @@
+baseURL = "https://ninesue.online"
+title = "An"
+locale = "zh-CN"
+hasCJKLanguage = true
+enableRobotsTXT = true
+
+# 只注册 tags;categories 保留为普通 front matter 数据,站内无入口
+[taxonomies]
+tag = "tags"
+
+[params]
+description = "明道若昧,进道若退"
+backLinkText = "Back"
+footerCopyright = "2025-PRESENT © An"
+dateFormat = "2006年1月2日"
+
+[markup.goldmark.renderer]
+unsafe = true
+
+[markup.goldmark.extensions.typographer]
+disable = true
+
+[markup.highlight]
+noClasses = false
+guessSyntax = false
+
+[outputs]
+home = ["html", "rss"]
+section = ["html"]
+taxonomy = ["html"]
+term = ["html"]
+
+# RSS 输出为根目录 /feed.xml,沿用 zola 时代的地址
+[outputFormats.rss]
+mediaType = "application/rss+xml"
+baseName = "feed"
+
+[services.rss]
+limit = 20

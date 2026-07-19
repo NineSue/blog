@@ -1,0 +1,61 @@
+{{ define "bodyclass" }}blog{{ end }}
+
+{{ define "main" }}
+<div id="wrapper">
+  {{ partial "header.html" "/" }}
+  {{ partial "section-title.html" . }}
+
+  {{ $allTags := slice }}
+  {{ range .Pages }}{{ range .Params.tags }}{{ $allTags = $allTags | append . }}{{ end }}{{ end }}
+  {{ $tags := $allTags | uniq | sort }}
+
+  <div class="tag-filter-bar">
+    <button class="tag-filter-btn active" data-tag="*">全部<span class="tag-filter-n">{{ len .Pages }}</span></button>
+    {{ range $tags }}
+    {{ $tag := . }}
+    {{ $count := 0 }}{{ range $.Pages }}{{ if in .Params.tags $tag }}{{ $count = add $count 1 }}{{ end }}{{ end }}
+    <button class="tag-filter-btn" data-tag="{{ $tag | urlize }}">{{ $tag }}<span class="tag-filter-n">{{ $count }}</span></button>
+    {{ end }}
+  </div>
+
+  <main class="layout-list">
+    {{ range .Pages.GroupByDate "2006" }}
+    <div class="post-list-year-sep"><span>{{ .Key }}</span></div>
+    <div class="post-list">
+      {{ range .Pages }}
+      <a class="post instant" href="{{ .RelPermalink }}" data-tags="{{ range .Params.tags }}{{ . | urlize }} {{ end }}">
+        <span class="post-title">{{ .Title }}</span>
+        <span class="post-tags-inline">{{ range .Params.tags }}<span>{{ . }}</span>{{ end }}</span>
+        <span class="post-meta">{{ .Date | time.Format "Jan 2" }} · {{ .ReadingTime }} min</span>
+      </a>
+      {{ end }}
+    </div>
+    {{ end }}
+  </main>
+
+  {{ partial "footer.html" . }}
+</div>
+{{ end }}
+
+{{ define "scripts" }}
+<script>
+  (function(){
+    var bar = document.querySelector('.tag-filter-bar');
+    if (!bar) return;
+    bar.addEventListener('click', function(e){
+      var btn = e.target.closest('.tag-filter-btn');
+      if (!btn) return;
+      var tag = btn.dataset.tag;
+      bar.querySelectorAll('.tag-filter-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      document.querySelectorAll('.post').forEach(function(p){
+        if (tag === '*' || (p.dataset.tags || '').indexOf(tag) >= 0) {
+          p.style.opacity = ''; p.style.pointerEvents = '';
+        } else {
+          p.style.opacity = '0.12'; p.style.pointerEvents = 'none';
+        }
+      });
+    });
+  })();
+</script>
+{{ end }}

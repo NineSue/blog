@@ -1,0 +1,45 @@
+# 友链数据文件
+# 使用 box 类型展示友链卡片
+
+[[collection]]
+type = "box"
+title = "安"
+subtitle = "一别如雨"
+link = "https://ninesue.online"
+img = "/img/avatar.webp"
+
+[[collection]]
+type = "box"
+title = "TC"
+subtitle = "在征服生物医学的路上"
+link = "https://wplog.qiutianci.top"
+img = "/img/friends/tc.webp"
+
+[[collection]]
+type = "box"
+title = "圆果"
+subtitle = "感动于努力的每一天的果子"
+link = "https://blog.yuanguo.online"
+img = "/img/friends/yuanguo.webp"
+
+[[collection]]
+type = "box"
+title = "Luxynth"
+subtitle = "“我心匪石不可转，我心匪席不可卷。”"
+link = "https://luxynth.cn/"
+img = "/img/friends/luxynth.webp"
+
+[[collection]]
+type = "box"
+title = "玺朽"
+subtitle = "“生活原本沉闷，但跑起来就会有风。”"
+link = "https://lonelymeko.top"
+img = "/img/friends/xixiu.webp"
+
+# 添加更多友链，复制上面的格式即可
+# [[collection]]
+# type = "box"
+# title = "朋友名字"
+# subtitle = "个人简介或网站描述"
+# link = "https://friend-blog.com"
+# img = "https://friend-blog.com/avatar.jpg"

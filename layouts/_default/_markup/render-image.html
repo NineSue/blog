@@ -1,0 +1,15 @@
+{{- /* 站内 /img/ 图片走构建期管线:压缩转 webp、限宽 1600、补尺寸防跳版、懒加载;其余原样输出 */ -}}
+{{- $res := "" -}}
+{{- if strings.HasPrefix .Destination "/img/" -}}
+  {{- $res = resources.Get (strings.TrimPrefix "/" .Destination) -}}
+{{- end -}}
+{{- with $res -}}
+  {{- if in (slice "png" "jpeg") .MediaType.SubType -}}
+    {{- $out := cond (gt .Width 1600) (.Resize "1600x webp q85") (.Process "webp q85") -}}
+    <img src="{{ $out.RelPermalink }}" width="{{ $out.Width }}" height="{{ $out.Height }}" alt="{{ $.PlainText }}" loading="lazy">
+  {{- else -}}
+    <img src="{{ .RelPermalink }}" alt="{{ $.PlainText }}" loading="lazy">
+  {{- end -}}
+{{- else -}}
+<img src="{{ .Destination | safeURL }}" alt="{{ .PlainText }}" loading="lazy">
+{{- end -}}

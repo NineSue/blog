@@ -1,0 +1,17 @@
+<title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
+<meta name="description" content="{{ or .Description site.Params.description }}">
+{{ if .IsHome }}
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ site.Title }}">
+<meta property="og:description" content="{{ site.Params.description }}">
+<meta property="og:url" content="{{ site.BaseURL }}">
+{{ else if and .IsPage (eq .Section "posts") }}
+<meta property="og:type" content="article">
+<meta property="og:title" content="{{ .Title }}">
+<meta property="og:description" content="{{ or .Description site.Params.description | plainify }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="article:published_time" content="{{ .Date.Format "2006-01-02" }}">
+{{ end }}
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:image" content="{{ absURL "apple-touch-icon.png" }}">
+<meta name="twitter:card" content="summary">

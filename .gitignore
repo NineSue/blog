@@ -1,0 +1,26 @@
+# Hugo 构建产物
+public/
+resources/
+
+# IDE 配置
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 操作系统
+.DS_Store
+Thumbs.db
+
+# 临时文件
+*.tmp
+*.bak
+*.log
+
+# Node.js
+node_modules/
+package-lock.json
+
+# 本地备忘,不上传
+NOTES.md

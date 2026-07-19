@@ -1,0 +1,92 @@
+{{ define "bodyclass" }}post{{ end }}
+
+{{ define "main" }}
+{{ $toc := and (.Params.toc | default true) .Fragments.Headings }}
+<div id="wrapper">
+  <div id="blank"></div>
+  <aside>
+    {{ if $toc }}
+    <nav>
+      {{ partial "toc.html" (dict "headings" .Fragments.Headings "level" 2) }}
+    </nav>
+    {{ end }}
+    <button id="back-to-top" aria-label="back to top">
+      {{ partial "icon.html" "arrow-up" }}
+    </button>
+  </aside>
+
+  {{ if $toc }}
+  <button id="mobile-toc-btn" aria-label="目录">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="12" x2="15" y2="12"></line>
+      <line x1="3" y1="18" x2="18" y2="18"></line>
+    </svg>
+  </button>
+
+  <div id="mobile-toc-overlay"></div>
+  <div id="mobile-toc-panel">
+    <div id="mobile-toc-header">
+      <span>目录</span>
+      <div id="mobile-toc-actions">
+        <button id="mobile-theme-toggle" aria-label="切换主题">
+          <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button id="mobile-toc-close" aria-label="关闭">✕</button>
+      </div>
+    </div>
+    <nav id="mobile-toc-nav">
+      {{ partial "toc.html" (dict "headings" .Fragments.Headings "level" 2) }}
+    </nav>
+  </div>
+  {{ end }}
+
+  <main>
+    {{ partial "header.html" "/posts/" }}
+    <div>
+      <div id="copy-cfg" style="display: none;" data-copy-icon="{{ partial "icon.html" "copy" }}" data-check-icon="{{ partial "icon.html" "check" }}"></div>
+      <article class="prose">
+        <h1>{{ .Title }}</h1>
+        <div id="post-info">
+          <div id="date">
+            <span id="publish">{{ .Date | time.Format site.Params.dateFormat }}</span>
+          </div>
+          {{ with .GetTerms "tags" }}
+          <div id="tags">
+            {{ range . }}
+            <a class="instant" href="{{ .RelPermalink }}"><span>#</span>{{ .LinkTitle }}</a>
+            {{ end }}
+            <span id="reading-time"> · {{ $.ReadingTime }} min · {{ $.WordCount }} 字</span>
+          </div>
+          {{ end }}
+        </div>
+        {{ .Content }}
+        {{ with .Params.tags }}
+        <div class="post-footer-tags">
+          {{ range . }}<span>{{ . }}</span>{{ end }}
+        </div>
+        {{ end }}
+      </article>
+    </div>
+    {{ partial "footer.html" . }}
+  </main>
+</div>
+{{ end }}
+
+{{ define "scripts" }}
+<script src="/js/toc-enhance.js"></script>
+<script src="/js/marker.js"></script>
+{{ end }}

@@ -1,0 +1,50 @@
+{{ define "bodyclass" }}homepage{{ end }}
+
+{{ define "main" }}
+<div id="wrapper">
+  <main>
+    <section id="info">
+      {{ with .Params.avatar }}<img src="{{ . | relURL }}" alt="avatar">{{ end }}
+      <div id="text">
+        <div>
+          <span id="name">{{ .Params.name }}</span>
+          {{ with .Params.id }}<span id="id">@{{ . }}</span>{{ end }}
+        </div>
+        {{ with .Params.bio }}<div id="bio">{{ . }}</div>{{ end }}
+      </div>
+    </section>
+    <section id="links">
+      <div id="left">
+        <a class="instant" href="/posts/">文</a>
+        <a class="instant" href="/friends/">友人帐</a>
+      </div>
+      <div id="right">
+        {{ range .Params.links }}
+        <a href="{{ .url }}" aria-label="{{ .name }}" target="_blank" rel="noreferrer noopener">{{ partial "icon.html" .icon }}</a>
+        {{ end }}
+        <button id="theme-toggle" aria-label="theme switch">
+          <span class="moon-icon">{{ partial "icon.html" "moon" }}</span>
+          <span class="sun-icon">{{ partial "icon.html" "sun" }}</span>
+        </button>
+      </div>
+    </section>
+    <section class="layout-list">
+      <div class="post-list">
+        {{ range first (int .Params.recentMax) site.RegularPages }}
+        <a class="post instant" href="{{ .RelPermalink }}">
+          <span class="post-title">{{ .Title }}</span>
+          <span class="post-meta">{{ .Date | time.Format "Jan 2" }} · {{ .ReadingTime }} min</span>
+        </a>
+        {{ end }}
+      </div>
+      <div class="read-more">
+        <a class="instant" href="/posts/">{{ .Params.recentMoreText }}</a>
+      </div>
+    </section>
+  </main>
+</div>
+{{ end }}
+
+{{ define "scripts" }}
+<script src="/js/marker.js"></script>
+{{ end }}

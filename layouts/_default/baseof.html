@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  {{ partial "head-meta.html" . }}
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link id="hl" rel="stylesheet" href="/hl-light.css">
+  {{ with resources.Get "sass/main.scss" | css.Sass | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ .RelPermalink }}">
+  {{ end }}
+  {{ partial "head-assets.html" . }}
+</head>
+
+<body class="{{ block "bodyclass" . }}{{ end }}">
+  <script>
+    // 首帧主题初始化(防闪白);切换逻辑在 js/main.js 的 applyTheme(),改存储键两处同步
+    const theme = localStorage.getItem('theme');
+    if (theme !== 'light') {
+      document.body.classList.add('dark');
+      document.documentElement.classList.add('dark');
+      const hl = document.querySelector('link#hl');
+      if (hl) hl.href = '/hl-dark.css';
+      if (!theme) localStorage.setItem('theme', 'dark');
+    }
+  </script>
+  {{ block "main" . }}{{ end }}
+  {{ block "scripts" . }}{{ end }}
+  <script src="/js/main.js"></script>
+</body>
+
+</html>

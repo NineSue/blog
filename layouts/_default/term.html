@@ -1,0 +1,21 @@
+{{ define "bodyclass" }}tag-single{{ end }}
+
+{{ define "main" }}
+<div id="wrapper">
+  {{ partial "header.html" "/tags/" }}
+  <main class="layout-list">
+    <div class="title">
+      <span># {{ .LinkTitle }}</span>
+    </div>
+    <div class="post-list">
+      {{ range .Pages }}
+      <a class="post instant" href="{{ .RelPermalink }}">
+        <span>{{ .Title }}</span>
+        <span class="date">{{ .Date | time.Format site.Params.dateFormat }}</span>
+      </a>
+      {{ end }}
+    </div>
+  </main>
+  {{ partial "footer.html" . }}
+</div>
+{{ end }}
