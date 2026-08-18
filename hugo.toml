@@ -9,10 +9,11 @@ enableRobotsTXT = true
 tag = "tags"
 
 [params]
-description = "明道若昧,进道若退"
-backLinkText = "Back"
+description = "「天行健，君子以自强不息」"
+siteName = "An"
 footerCopyright = "2025-PRESENT © An"
 dateFormat = "2006年1月2日"
+dateFormatShort = "Jan 2"
 
 [markup.goldmark.renderer]
 unsafe = true

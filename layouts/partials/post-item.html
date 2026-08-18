@@ -1,0 +1,5 @@
+{{- $page := .page -}}
+<a class="post instant" href="{{ $page.RelPermalink }}"{{ if .showTags }} data-tags="{{ range $page.Params.tags }}{{ . | urlize }} {{ end }}"{{ end }}>
+  <span class="post-title">{{ $page.Title }}</span>
+  <span class="post-meta">{{ $page.Date | time.Format site.Params.dateFormatShort }} · {{ $page.ReadingTime }} min</span>
+</a>

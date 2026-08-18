@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link id="hl" rel="stylesheet" href="/hl-light.css">
+  <link rel="stylesheet" href="/hl-dark.css">
   {{ with resources.Get "sass/main.scss" | css.Sass | minify | fingerprint }}
   <link rel="stylesheet" href="{{ .RelPermalink }}">
   {{ end }}
@@ -18,19 +18,19 @@
 
 <body class="{{ block "bodyclass" . }}{{ end }}">
   <script>
-    // 首帧主题初始化(防闪白);切换逻辑在 js/main.js 的 applyTheme(),改存储键两处同步
+    // 首帧主题初始化(防闪白):有存储则尊重用户选择,无存储则跟随系统偏好
     const theme = localStorage.getItem('theme');
-    if (theme !== 'light') {
+    const isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (isDark) {
       document.body.classList.add('dark');
       document.documentElement.classList.add('dark');
-      const hl = document.querySelector('link#hl');
-      if (hl) hl.href = '/hl-dark.css';
-      if (!theme) localStorage.setItem('theme', 'dark');
     }
   </script>
   {{ block "main" . }}{{ end }}
   {{ block "scripts" . }}{{ end }}
+  <script src="/js/theme.js"></script>
   <script src="/js/main.js"></script>
+  <script src="/js/oneko.js" defer></script>
 </body>
 
 </html>

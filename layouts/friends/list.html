@@ -3,7 +3,7 @@
 {{ define "main" }}
 <div id="wrapper">
   <main>
-    {{ partial "header.html" "/" }}
+    {{ partial "header.html" }}
     {{ partial "section-title.html" . }}
     <div>
       <article class="prose">
@@ -13,8 +13,4 @@
     {{ partial "footer.html" . }}
   </main>
 </div>
-{{ end }}
-
-{{ define "scripts" }}
-<script src="/js/marker.js"></script>
 {{ end }}

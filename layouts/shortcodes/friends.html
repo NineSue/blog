@@ -1,5 +1,15 @@
 <section class="collection-wrapper">
-  {{ range site.Data.links.collection }}
+  <!-- 自己：默认首位。名字/签名来自 site.Params，改 hugo.toml 一处即可全站同步 -->
+  <div class="collection-box-wrapper">
+    <a class="collection box" href="{{ site.BaseURL }}" rel="noreferrer noopener">
+      <img class="no-lightense" src="/img/avatar.webp" alt="{{ site.Params.siteName }}" width="48" height="48">
+      <div class="text">
+        <div class="title">{{ site.Params.siteName }}</div>
+        <div class="subtitle">{{ site.Params.description }}</div>
+      </div>
+    </a>
+  </div>
+  {{ range hugo.Data.links.collection }}
   <div class="collection-box-wrapper">
     <a class="collection box" href="{{ .link }}" target="_blank" rel="noreferrer noopener">
       <img class="no-lightense" src="{{ .img }}" alt="{{ .title }}" width="48" height="48">

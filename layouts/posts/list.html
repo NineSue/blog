@@ -2,7 +2,7 @@
 
 {{ define "main" }}
 <div id="wrapper">
-  {{ partial "header.html" "/" }}
+  {{ partial "header.html" }}
   {{ partial "section-title.html" . }}
 
   {{ $allTags := slice }}
@@ -20,16 +20,14 @@
 
   <main class="layout-list">
     {{ range .Pages.GroupByDate "2006" }}
-    <div class="post-list-year-sep"><span>{{ .Key }}</span></div>
-    <div class="post-list">
-      {{ range .Pages }}
-      <a class="post instant" href="{{ .RelPermalink }}" data-tags="{{ range .Params.tags }}{{ . | urlize }} {{ end }}">
-        <span class="post-title">{{ .Title }}</span>
-        <span class="post-tags-inline">{{ range .Params.tags }}<span>{{ . }}</span>{{ end }}</span>
-        <span class="post-meta">{{ .Date | time.Format "Jan 2" }} · {{ .ReadingTime }} min</span>
-      </a>
-      {{ end }}
-    </div>
+    <section class="year-group">
+      <span class="year-ghost">{{ .Key }}</span>
+      <div class="post-list">
+        {{ range .Pages }}
+        {{ partial "post-item.html" (dict "page" . "showTags" true) }}
+        {{ end }}
+      </div>
+    </section>
     {{ end }}
   </main>
 
@@ -49,7 +47,8 @@
       bar.querySelectorAll('.tag-filter-btn').forEach(function(b){ b.classList.remove('active'); });
       btn.classList.add('active');
       document.querySelectorAll('.post').forEach(function(p){
-        if (tag === '*' || (p.dataset.tags || '').indexOf(tag) >= 0) {
+        var tags = (p.dataset.tags || '').trim().split(/\s+/);
+        if (tag === '*' || tags.indexOf(tag) >= 0) {
           p.style.opacity = ''; p.style.pointerEvents = '';
         } else {
           p.style.opacity = '0.12'; p.style.pointerEvents = 'none';

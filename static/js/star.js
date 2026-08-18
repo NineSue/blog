@@ -3,8 +3,8 @@
  * 支持清理和重新初始化，适配 View Transition API 页面切换
  * 仅在暗色模式下显示
  */
-(function() {
-  'use strict';
+(function () {
+  "use strict";
 
   let canvas = null;
   let ctx = null;
@@ -19,7 +19,7 @@
    * 检查是否为暗色模式
    */
   function isDarkMode() {
-    return document.body.classList.contains('dark');
+    return document.body.classList.contains("dark");
   }
 
   /**
@@ -34,7 +34,7 @@
 
     // 移除窗口大小调整监听器
     if (resizeHandler) {
-      window.removeEventListener('resize', resizeHandler);
+      window.removeEventListener("resize", resizeHandler);
       resizeHandler = null;
     }
 
@@ -53,7 +53,6 @@
     canvas = null;
     ctx = null;
     stars = [];
-
   }
 
   /**
@@ -64,8 +63,8 @@
     cleanup();
 
     // 创建新的 canvas 元素
-    canvas = document.createElement('canvas');
-    ctx = canvas.getContext('2d');
+    canvas = document.createElement("canvas");
+    ctx = canvas.getContext("2d");
     canvas.style.cssText = `
       position: fixed;
       top: 0;
@@ -74,16 +73,16 @@
       height: 100%;
       pointer-events: none;
       z-index: -1;
-      opacity: ${isDarkMode() ? '1' : '0'};
+      opacity: ${isDarkMode() ? "1" : "0"};
       transition: opacity 0.3s ease;
     `;
     document.body.appendChild(canvas);
 
     // 监听主题变化
-    themeObserver = new MutationObserver(function(mutations) {
-      mutations.forEach(function(mutation) {
-        if (mutation.attributeName === 'class') {
-          canvas.style.opacity = isDarkMode() ? '1' : '0';
+    themeObserver = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        if (mutation.attributeName === "class") {
+          canvas.style.opacity = isDarkMode() ? "1" : "0";
           syncLoopToTheme();
         }
       });
@@ -94,26 +93,27 @@
     function resize() {
       dpr = window.devicePixelRatio || 1;
       const oldWidth = width;
+      const oldHeight = height;
       width = window.innerWidth;
       height = window.innerHeight;
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       ctx.scale(dpr, dpr);
 
-      // 如果宽度变化，调整星星的 x 位置
-      if (oldWidth && oldWidth !== width && stars.length > 0) {
-        const ratio = width / oldWidth;
+      // 尺寸变化时按比例缩放保留相对位置，超界就 clamp，不重新随机
+      if (oldWidth && oldHeight && stars.length > 0) {
+        const rx = width / oldWidth;
+        const ry = height / oldHeight;
         for (const s of stars) {
-          s.x *= ratio;
-          // 确保星星在可见范围内
-          if (s.x > width) s.x = Math.random() * width;
+          s.x = Math.min(s.x * rx, width);
+          s.y = Math.min(s.y * ry, height);
         }
       }
     }
 
     // 保存 resize 处理器引用，以便清理
     resizeHandler = resize;
-    window.addEventListener('resize', resizeHandler);
+    window.addEventListener("resize", resizeHandler);
     resize();
 
     // 预渲染星星 sprite：避免每帧新建径向渐变带来的 GC 压力
@@ -124,13 +124,13 @@
       if (sprite) return sprite;
       const s = key / 4;
       const r = s * 2;
-      sprite = document.createElement('canvas');
+      sprite = document.createElement("canvas");
       sprite.width = sprite.height = Math.ceil(r * 2);
-      const g = sprite.getContext('2d');
+      const g = sprite.getContext("2d");
       const gradient = g.createRadialGradient(r, r, 0, r, r, s);
-      gradient.addColorStop(0, 'rgba(180, 220, 255, 1)');
-      gradient.addColorStop(0.5, 'rgba(80, 150, 255, 0.8)');
-      gradient.addColorStop(1, 'rgba(0, 0, 80, 0)');
+      gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
+      gradient.addColorStop(0.5, "rgba(255, 255, 255, 0.35)");
+      gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
       g.fillStyle = gradient;
       g.arc(r, r, r, 0, Math.PI * 2);
       g.fill();
@@ -138,7 +138,7 @@
       return sprite;
     }
 
-    // 星星类
+    // 星星类：位置固定，仅亮度呼吸起伏（发光感），不下落
     class Star {
       constructor() {
         this.reset();
@@ -146,30 +146,31 @@
 
       reset() {
         this.x = Math.random() * width;
-        this.y = Math.random() * -height;
+        this.y = Math.random() * height;
         this.size = Math.random() * 2 + 1;
-        this.speed = Math.random() * 0.8 + 0.2;
-        this.alpha = Math.random() * 0.8 + 0.2;
-        this.twinkle = Math.random() * 0.05 + 0.01;
+        this.baseAlpha = Math.random() * 0.6 + 0.3;
+        this.twinkleSpeed = Math.random() * 0.03 + 0.01;
+        this.phase = Math.random() * Math.PI * 2;
         this.sprite = spriteFor(this.size);
       }
 
       update() {
-        this.y += this.speed;
-        this.alpha += this.twinkle * (Math.random() > 0.5 ? 1 : -1);
-        if (this.alpha < 0.1) this.alpha = 0.1;
-        if (this.alpha > 1) this.alpha = 1;
-        if (this.y > height + 10) this.reset();
+        this.phase += this.twinkleSpeed;
+        this.alpha = this.baseAlpha * (0.5 + 0.5 * Math.sin(this.phase));
       }
 
       draw() {
         ctx.globalAlpha = this.alpha;
-        ctx.drawImage(this.sprite, this.x - this.size * 2, this.y - this.size * 2);
+        ctx.drawImage(
+          this.sprite,
+          this.x - this.size * 2,
+          this.y - this.size * 2,
+        );
       }
     }
 
     // 创建 200 个星星
-    stars = Array.from({length: 200}, () => new Star());
+    stars = Array.from({ length: 200 }, () => new Star());
 
     // 动画循环
     function animate() {
@@ -201,12 +202,16 @@
   }
 
   // 导出全局接口（pause/resume 供主题切换动画暂停星空）
-  window.pauseStars = function() { isPaused = true; };
-  window.resumeStars = function() { isPaused = false; };
+  window.pauseStars = function () {
+    isPaused = true;
+  };
+  window.resumeStars = function () {
+    isPaused = false;
+  };
 
   // 首次加载时自动初始化
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
   }

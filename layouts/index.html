@@ -6,17 +6,15 @@
     <section id="info">
       {{ with .Params.avatar }}<img src="{{ . | relURL }}" alt="avatar">{{ end }}
       <div id="text">
-        <div>
-          <span id="name">{{ .Params.name }}</span>
-          {{ with .Params.id }}<span id="id">@{{ . }}</span>{{ end }}
-        </div>
-        {{ with .Params.bio }}<div id="bio">{{ . }}</div>{{ end }}
+        <span id="name">{{ site.Params.siteName }}</span>
+        <div id="bio">{{ site.Params.description }}</div>
       </div>
     </section>
     <section id="links">
       <div id="left">
         <a class="instant" href="/posts/">文</a>
         <a class="instant" href="/friends/">友人帐</a>
+        <span id="cat-shelf" aria-hidden="true"></span>
       </div>
       <div id="right">
         {{ range .Params.links }}
@@ -31,10 +29,7 @@
     <section class="layout-list">
       <div class="post-list">
         {{ range first (int .Params.recentMax) site.RegularPages }}
-        <a class="post instant" href="{{ .RelPermalink }}">
-          <span class="post-title">{{ .Title }}</span>
-          <span class="post-meta">{{ .Date | time.Format "Jan 2" }} · {{ .ReadingTime }} min</span>
-        </a>
+        {{ partial "post-item.html" (dict "page" .) }}
         {{ end }}
       </div>
       <div class="read-more">
@@ -46,5 +41,21 @@
 {{ end }}
 
 {{ define "scripts" }}
-<script src="/js/marker.js"></script>
+<script>
+  // 首页签名打字机：逐字打出，打完即停，无光标
+  (function () {
+    var bio = document.getElementById('bio');
+    if (!bio) return;
+    var text = bio.textContent;
+    bio.textContent = '';
+    var i = 0;
+    (function type() {
+      if (i < text.length) {
+        bio.textContent += text[i];
+        i++;
+        setTimeout(type, 200);
+      }
+    })();
+  })();
+</script>
 {{ end }}

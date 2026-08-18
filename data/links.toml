@@ -1,12 +1,6 @@
 # 友链数据文件
 # 使用 box 类型展示友链卡片
-
-[[collection]]
-type = "box"
-title = "安"
-subtitle = "一别如雨"
-link = "https://ninesue.online"
-img = "/img/avatar.webp"
+# 「自己」已变量化：由 friends.html 模板用 site.Params.siteName / description 自动渲染，无需在此维护
 
 [[collection]]
 type = "box"

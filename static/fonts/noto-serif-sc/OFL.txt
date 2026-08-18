@@ -1,0 +1,10 @@
+Noto Serif SC
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+Copyright (c) Google LLC. Noto is a trademark of Google LLC.
+
+The full SIL Open Font License 1.1 text applies. See:
+https://openfontlicense.org
+https://github.com/googlefonts/noto-cjk
+
+This distribution is a subset (unicode-range sliced) of the original Noto Serif SC
+font, generated via cn-font-split. No reserved font name is used for any derivative.
